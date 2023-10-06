@@ -619,7 +619,7 @@ it('Test readme usage example: 🔄 Objects with cyclic dependency', () => {
   }
 
   // Example 1: Using the Path type with a Depth limit
-  type NodePathsDepth2 = Path<Node, 2> // Depth limit of 2
+  type NodePathsDepth2 = Path<Node, 1> // Depth limit of 1
 
   // NodePathsDepth2 will be a union type representing all valid paths in dot notation up to a depth of 3:
   // 'id' | 'label' | 'parent' | 'children' | 'parent.id' | 'parent.label' | 'parent.parent' | 'parent.children' | `parent.parent.${any}` | `parent.children.${any}` | `children.${number}` | `children.${number}.${any}`
@@ -639,12 +639,12 @@ it('Test readme usage example: 🔄 Objects with cyclic dependency', () => {
   >()
 
   // Example 2: Using the PathValue type with a Depth limit
-  type ValueAtPathParent_Id = PathValue<Node, 'parent.id', 3> // Output: number
+  type ValueAtPathParent_Id = PathValue<Node, 'parent.id', 2> // Output: number
   expectTypeOf<ValueAtPathParent_Id>().toEqualTypeOf<number>()
 
-  type ValueAtPathChildren_0_Label = PathValue<Node, 'children.0.label', 3> // Output: string | undefined
+  type ValueAtPathChildren_0_Label = PathValue<Node, 'children.0.label', 2> // Output: string | undefined
   expectTypeOf<ValueAtPathChildren_0_Label>().toEqualTypeOf<string | undefined>()
 
-  type ValueAtPathParent_Parent_Parent = PathValue<Node, 'parent.parent.parent.parent', 3> // Output: unknown (due to the depth limit)
+  type ValueAtPathParent_Parent_Parent = PathValue<Node, 'parent.parent.parent.parent', 2> // Output: unknown (due to the depth limit)
   expectTypeOf<ValueAtPathParent_Parent_Parent>().toEqualTypeOf<unknown>()
 })
