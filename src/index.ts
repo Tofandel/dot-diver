@@ -256,7 +256,9 @@ type Path<
   ? BeforeLast<Offset, '.'> extends infer H
     ? H extends string | number
       ? PathValue<T, H, 40> extends infer V
-        ? `${H}.${SimplePath<V, Depth>}`
+        ? IsNever<V> extends true
+          ? SimplePath<T, Depth>
+          : `${H}.${SimplePath<V, Depth>}`
         : SimplePath<T, Depth>
       : never
     : never
@@ -298,14 +300,19 @@ type ValueTraversalStep<T, P, DepthCarry extends unknown[]> = IsAny<T> extends t
   : IsNullableOrUndefineable<T> extends true
   ? ValueTraversalGate<ExcludeNullUndefined<T>, P, DepthCarry> | undefined
   : IsTuple<T> extends true
-  ? P extends `${infer H}.${infer R}`
+  ? P extends `${infer H}.${infer R extends number}`
     ? ValueTraversalGate<TupleElement<T, H>, R, DepthCarry>
-    : TupleElement<T, P>
+    : P extends `${infer K extends number}`
+    ? TupleElement<T, K> | undefined
+    : never
   : IsArray<T> extends true
   ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    P extends `${infer _H}.${infer R}`
+    P extends `${infer _H extends number}.${infer R}`
     ? ValueTraversalGate<GetArrayElement<T>, R, DepthCarry> | undefined
-    : GetArrayElement<T> | undefined
+    : // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    P extends `${infer _K extends number}`
+    ? GetArrayElement<T> | undefined
+    : never
   : P extends `${infer H}.${infer R}`
   ? H extends keyof T
     ?
