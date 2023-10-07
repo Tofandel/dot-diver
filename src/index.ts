@@ -133,7 +133,7 @@ type GetRecordPaths<
   : never
 
 // get all possible paths of an array
-type GetArrayPaths<T, DepthCarry extends unknown[]> = `${number}.${TraversalGate<
+type GetArrayPaths<T, DepthCarry extends unknown[]> = `\${number}.${TraversalGate<
   GetArrayElement<T>,
   DepthCarry
 >}`
