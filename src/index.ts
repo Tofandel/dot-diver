@@ -350,7 +350,7 @@ type SearchableObject = Record<never, never> | unknown[]
  * Without the intersection, the path would just be of type PathEntry<T, 10> and PathValueEntry would be a union of all possible return types.
  * By using the intersection, TypeScript is forced to apply the PathEntry constraints and infer the type from the provided user input.
  */
-function getByPath<T extends SearchableObject, P extends CircularConstraintPathHelper<T, 1, [P]>>(
+function getByPath<T extends SearchableObject, P extends CircularConstraintPathHelper<T, 2, [P]>>(
   object: T,
   path: P & string // required so type gets narrowed down from its union of possible paths to its actual value. TODO: Find Ts-Issue or similiar why this is required.
 ): PathValue<T, P> {
@@ -366,15 +366,15 @@ function getByPath<T extends SearchableObject, P extends CircularConstraintPathH
  * @param value - value to set
  *
  * @privateRemarks
- * The intersection between PathEntry<T, 10>  and string is necessary for TypeScript to successfully narrow down the type of P based on the user-provided path input.
- * Without the intersection, the path would just be of type PathEntry<T, 10> and PathValueEntry would be a union of all possible return types.
+ * The intersection between CircularConstraintPathHelper<T, 2, [P]>  and string is necessary for TypeScript to successfully narrow down the type of P based on the user-provided path input.
+ * Without the intersection, the path would just be of type CircularConstraintPathHelper<T, 2, [P]> and PathValueEntry would be a union of all possible return types.
  * By using the intersection, TypeScript is forced to apply the PathEntry constraints and infer the type from the provided user input.
  */
 function setByPath<
   T extends SearchableObject,
-  P extends SimplePath<T, 10> & string,
+  P extends CircularConstraintPathHelper<T, 2, [P]>,
   V extends PathValue<T, P>
->(object: T, path: P, value: V): void {
+>(object: T, path: P & string, value: V): void {
   const pathArray = (path as string).split('.')
   const lastKey = pathArray.pop()
 
