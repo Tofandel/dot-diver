@@ -110,6 +110,22 @@ it('returns undefined on non objects', () => {
   expect(getByPath(test as any, 'undef.baz')).toBe(undefined)
 })
 
+
+it('throws when setting invalid path', () => {
+  const test = {
+    first: 'test',
+    null: null,
+    undef: undefined,
+  }
+
+  expect(() => { setByPath(null as any, 'first', true) }).toThrowError("Cannot create property 'first' on null")
+  expect(() => { setByPath(test as any, 'first.foo', true) }).toThrowError("Cannot create property 'foo' on string")
+  expect(() => { setByPath(test as any, 'first.foo.baz', true) }).toThrowError("Cannot create property 'foo' on string")
+  expect(() => { setByPath(test as any, 'null.bar', true) }).toThrowError("Cannot create property 'bar' on null")
+  expect(() => { setByPath(test as any, 'undef.baz', true) }).toThrowError("Cannot create property 'baz' on undefined")
+})
+
+
 it('Test readme usage example: ⚙️ Customizing the Depth Limit', () => {
   // eslint-disable-next-line unicorn/consistent-function-scoping
   function getByPathDepth5<T extends SearchableObject, P extends Path<T, 5> & string>(
